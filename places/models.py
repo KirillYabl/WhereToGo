@@ -11,3 +11,24 @@ class Place(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = 'место'
+        verbose_name_plural = 'места'
+
+
+class PlaceImage(models.Model):
+    place = models.ForeignKey(to=Place, related_name='images', on_delete=models.CASCADE)
+    place_image = models.ImageField(verbose_name='картинка места')
+    image_order = models.PositiveSmallIntegerField(verbose_name='порядок отображения',
+                                                   help_text='порядок от меньшего к большему, т.е. 1 покажется первой')
+
+    def __str__(self):
+        return f'{self.image_order} {self.place_image.path}'
+
+    class Meta:
+        verbose_name = 'изображение места'
+        verbose_name_plural = 'изображения места'
+        unique_together = [
+            ['place', 'image_order'],
+        ]
