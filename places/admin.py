@@ -1,14 +1,17 @@
+from adminsortable2.admin import SortableAdminBase
+from adminsortable2.admin import SortableTabularInline
 from django.contrib import admin
 from django.utils.html import format_html
 
 from . import models
 
 
-class PlaceImageInline(admin.TabularInline):
+class PlaceImageInline(SortableTabularInline):
     model = models.PlaceImage
 
     readonly_fields = ["image"]
     fields = ['place_image', 'image', 'image_order']
+    extra = 0
 
     def image(self, obj):
         max_height = 200
@@ -28,7 +31,7 @@ class PlaceImageInline(admin.TabularInline):
 
 # Register your models here.
 @admin.register(models.Place)
-class PlaceAdmin(admin.ModelAdmin):
+class PlaceAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = [PlaceImageInline, ]
 
 

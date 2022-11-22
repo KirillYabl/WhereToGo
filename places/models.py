@@ -29,6 +29,4 @@ class PlaceImage(models.Model):
     class Meta:
         verbose_name = 'изображение места'
         verbose_name_plural = 'изображения места'
-        unique_together = [
-            ['place', 'image_order'],
-        ]
+        ordering = ['image_order']
