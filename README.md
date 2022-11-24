@@ -10,14 +10,12 @@ Python3 should already be installed. Then use pip to install the dependencies ([
 pip install -r requirements.txt
 ```
 
-Go to the `where_to_go` directory.
-
 You also need to update the database:
 ```
 python manage.py migrate
 ```
 
-Optionally (**You can run the site for yourself without this file**) create a `.env` file with the following options:
+Optionally (**You can run the site for yourself without this file**) create a `.env` file in `where_to_go` directory with the following options:
 - `SECRET_KEY` - [secret key](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-SECRET_KEY) for you site
 - `DEBUG` - boolean(true/false) parameter which turn on/off the debug mode. [More](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-DEBUG)
 - `ALLOWED_HOSTS` - is a comma-separated list of IP addresses or URLs that the server can serve. [More](https://docs.djangoproject.com/en/4.1/ref/settings/#allowed-hosts)
