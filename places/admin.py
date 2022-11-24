@@ -1,12 +1,12 @@
 from adminsortable2.admin import SortableAdminBase
-from adminsortable2.admin import SortableTabularInline
+from adminsortable2.admin import SortableInlineAdminMixin
 from django.contrib import admin
 from django.utils.html import format_html
 
 from . import models
 
 
-class PlaceImageInline(SortableTabularInline):
+class PlaceImageInline(SortableInlineAdminMixin, admin.TabularInline):
     model = models.PlaceImage
 
     readonly_fields = ["image"]
