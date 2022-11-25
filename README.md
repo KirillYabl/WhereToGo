@@ -4,6 +4,8 @@
 The site is an interactive map with an expandable (in the admin panel) collection of places (for example, interesting places)
 which have a title, description and a set of images.
 
+[Working example](http://kirilliablunovskii.pythonanywhere.com/)
+
 ### How to install
 Python3 should already be installed. Then use pip to install the dependencies ([virtual environment](https://docs.python.org/3/library/venv.html) is recommended):
 ```
@@ -31,6 +33,22 @@ That's all, you can start the server! Your site will be running at `127.0.0.1:80
 ```
 python manage.py runserver
 ```
+
+### How to load data
+There is a file `init_places.txt` with links to place data.
+To download the data, after successfully installing the application, you can enter the following command to download the initial 28 locations:
+```
+python manage.py load_place init_places.txt -f
+```
+
+`load_place` usage:
+`python manage.py load_place [url_or_path] [-f] [-fu]`
+
+Where `url_or_path` is a positional argument that is the URL of a single location file or a file with multiple URLs.
+
+The command `load_place` has next options:
+- `-f`, `--file` - enter this option if you want to download a file with many location URLs, otherwise the command will wait for a URL with location data
+- `-fu`, `--force_update` - the command will update the location with the same title if you enter this option, otherwise the program will ask you
 
 #### How to use admin part of site
 Stop the server if it is running.
