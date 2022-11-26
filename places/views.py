@@ -9,7 +9,7 @@ from . import utils
 def get_place(request, place_pk):
     place = get_object_or_404(Place, pk=place_pk)
     return JsonResponse(
-        utils.construct_json_by_place(place),
+        utils.construct_dict_by_place(place),
         json_dumps_params={'ensure_ascii': False, 'indent': 4}
     )
 

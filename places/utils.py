@@ -5,8 +5,8 @@ from django.urls import reverse
 from .models import Place
 
 
-def construct_json_by_place(place: Place) -> Dict[str, Any]:
-    json_file_data = {
+def construct_dict_by_place(place: Place) -> Dict[str, Any]:
+    return {
         'title': place.title,
         'imgs': [image.place_image.url for image in place.images.all()],
         'description_short': place.description_short,
@@ -16,7 +16,6 @@ def construct_json_by_place(place: Place) -> Dict[str, Any]:
             'lat': place.lat
         }
     }
-    return json_file_data
 
 
 def write_feature_by_place(place: Place) -> Dict[str, Any]:
