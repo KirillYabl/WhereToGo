@@ -8,7 +8,7 @@ from places.models import Place, PlaceImage
 
 
 class Command(BaseCommand):
-    help = 'Load location by url'
+    help = 'Load location by url or locations by file with urls'
 
     @staticmethod
     def upload_image(place, image_url, image_order):
