@@ -14,17 +14,9 @@ class PlaceImageInline(SortableInlineAdminMixin, admin.TabularInline):
     extra = 0
 
     def image(self, obj):
-        max_height = 200
-        height = obj.place_image.height
-        width = obj.place_image.width
-        if height > max_height:
-            height_divider = height / max_height
-            height = int(height / height_divider)
-            width = int(width / height_divider)
-        return format_html('<img src="{url}" width="{width}" height={height} />'.format(
+        return format_html('<img src="{url}" height={height} style="max-height: 200px" />'.format(
             url=obj.place_image.url,
-            width=width,
-            height=height,
+            height=obj.place_image.height,
         )
         )
 
