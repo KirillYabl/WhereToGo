@@ -29,44 +29,32 @@ class Command(BaseCommand):
         lat = place_raw['coordinates']['lat']
         lon = place_raw['coordinates']['lng']
 
-        place_with_same_title_set = Place.objects.filter(title=place_raw['title'])
-
-        # if 0 then anyway create new, if more than 1 then don't know what to update
-        update_place = False
-        if place_with_same_title_set.count() == 1:
-            place_with_same_title = place_with_same_title_set.first()
-            same_lat = place_with_same_title.lat == float(lat)
-            same_lon = place_with_same_title.lon == float(lon)
-            same_lat_lon = same_lat and same_lon
-
-            update_message = '''You have place with the same title{adding}.
-Enter `y` if you want to update it, otherwise it will create new one.
-'''
-            adding = ', latitude and longitude' if same_lat_lon else ''
-            update_message = update_message.format(adding=adding)
-            update_place = force_update or input(update_message).lower() == 'y'
-
-        update_data = {
-            'lat': lat,
-            'lon': lon,
+        defaults = {
             'description_short': place_raw['description_short'],
             'description_long': place_raw['description_long'],
         }
-        create_data = update_data.copy()
-        create_data['title'] = place_raw['title']
-        if update_place:
-            Place.objects.filter(pk=place_with_same_title.pk).update(**update_data)
-            PlaceImage.objects.filter(place__pk=place_with_same_title.pk).delete()
-            self.upload_images(place_with_same_title, place_raw)
 
-            print('Place was successfully updated')
+        if force_update:
+            place, created = Place.objects.update_or_create(title=place_raw['title'], lat=lat, lon=lon,
+                                                            defaults=defaults)
+        else:
+            place, created = Place.objects.get_or_create(title=place_raw['title'], lat=lat, lon=lon,
+                                                         defaults=defaults)
+            if not created:
+                print(
+                    'Place with same title, lat and lon already exists. Use flag --force_update if you want update it.')
+                return
+
+        # if place need to update is is needs to delete old images
+        if not created and force_update:
+            PlaceImage.objects.filter(place__pk=place.pk).delete()
+        self.upload_images(place, place_raw)
+
+        if created and not force_update:
+            print('Place was successfully created')
             return
 
-        place = Place(**create_data)
-        place.save()
-        self.upload_images(place, place_raw)
-        print('Place was successfully created')
-        return
+        print('Place was successfully updated')
 
     def add_arguments(self, parser):
         parser.add_argument('url_or_path', type=str,
