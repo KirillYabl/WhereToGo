@@ -26,8 +26,8 @@ class Command(BaseCommand):
         lon = place_raw['coordinates']['lng']
 
         defaults = {
-            'description_short': place_raw['description_short'],
-            'description_long': place_raw['description_long'],
+            'description_short': place_raw.get('description_short', ''),
+            'description_long': place_raw.get('description_long', ''),
         }
 
         if force_update:
@@ -39,20 +39,24 @@ class Command(BaseCommand):
             if not created:
                 print(
                     'Place with same title, lat and lon already exists. Use flag --force_update if you want update it.')
+                print(f'Place {place} skipped')
                 return
 
         # if place need to update is is needs to delete old images
         if not created and force_update:
             PlaceImage.objects.filter(place__pk=place.pk).delete()
 
-        for image_order, image_url in enumerate(place_raw['imgs'], start=1):
+        images_links = place_raw.get('imgs', [])
+        if not images_links:
+            print(f'WARNING: place "{place}" do not have images')
+        for image_order, image_url in enumerate(images_links, start=1):
             self.upload_image(place, image_url, image_order)
 
         if created and not force_update:
-            print('Place was successfully created')
+            print(f'Place {place} was successfully created')
             return
 
-        print('Place was successfully updated')
+        print(f'Place {place} was successfully updated')
 
     def add_arguments(self, parser):
         parser.add_argument('url_or_path', type=str,
