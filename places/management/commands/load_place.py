@@ -1,7 +1,7 @@
 import uuid
 
 from django.core.files.base import ContentFile
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 import requests
 
 from places.models import Place, PlaceImage
@@ -35,8 +35,9 @@ class Command(BaseCommand):
         update_place = False
         if place_with_same_title_set.count() == 1:
             place_with_same_title = place_with_same_title_set.first()
-            same_lat_lon = place_with_same_title.lat == float(lat) and \
-                           place_with_same_title.lon == float(lon)
+            same_lat = place_with_same_title.lat == float(lat)
+            same_lon = place_with_same_title.lon == float(lon)
+            same_lat_lon = same_lat and same_lon
 
             update_message = '''You have place with the same title{adding}.
 Enter `y` if you want to update it, otherwise it will create new one.
