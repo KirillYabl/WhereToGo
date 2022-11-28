@@ -18,10 +18,6 @@ class Command(BaseCommand):
         place_image = PlaceImage.objects.create(place=place, place_image=content_file, image_order=image_order)
         place_image.save()
 
-    def upload_images(self, place, place_raw):
-        for image_order, image_url in enumerate(place_raw['imgs'], start=1):
-            self.upload_image(place, image_url, image_order)
-
     def load_place(self, url, force_update):
         response = requests.get(url)
         response.raise_for_status()
@@ -48,7 +44,9 @@ class Command(BaseCommand):
         # if place need to update is is needs to delete old images
         if not created and force_update:
             PlaceImage.objects.filter(place__pk=place.pk).delete()
-        self.upload_images(place, place_raw)
+
+        for image_order, image_url in enumerate(place_raw['imgs'], start=1):
+            self.upload_image(place, image_url, image_order)
 
         if created and not force_update:
             print('Place was successfully created')
